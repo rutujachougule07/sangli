@@ -1,0 +1,37 @@
+﻿
+
+Description       : "Updates to Hero Section:\n- Swapped 1st and 2nd images.\n- Replaced slide titles with 'Nivedita 
+                    Bhavan...' and 'Women Empowerment'.\n- Centered the text on desktop.\n- Made the title pure white 
+                    instead of amber.\n- Made the image overlay darker.\n- Removed black background for Nivedita 
+                    Bhavan image (changed to object-cover)."
+Instruction       : "Update hero section based on user feedback."
+ReplacementChunks : [{"AllowMultiple":false,"EndLine":69,"ReplacementContent":"  const slides = useMemo(() => [\n    
+                    {\n      image: \"/images/nivedita_bhavan.jpg\",\n      title: language === \"mr\" ? 
+                    \"à¤¨à¤¿à¤µà¥‡à¤¦à¤¿à¤¤à¤¾ à¤à¤µà¤¨\" : \"Nivedita Bhavan\",\n      subtitle: language === \"mr\" 
+                    ? \"à¤—à¤£à¥‡à¤¶ à¤¦à¥à¤°à¥à¤—, à¤°à¤¾à¤œà¤µà¤¾à¤¡à¤¾, à¤¸à¤¾à¤‚à¤—à¤²à¥€ à¥ªà¥§à¥¬à¥ªà¥§à¥¬\" : 
+                    \"Ganesh Durg, Rajwada, Sangli 416416\"\n    },\n    {\n      image: \"/images/5.jpeg\",\n      
+                    title: language === \"mr\" ? \"à¤®à¤¹à¤¿à¤²à¤¾ à¤¸à¤•à¥à¤·à¤®à¥€à¤•à¤°à¤£\" : \"Women 
+                    Empowerment\",\n      subtitle: language === \"mr\" ? \"à¤¶à¤¿à¤•à¥à¤·à¤£, à¤ªà¥à¤°à¤¬à¥‹à¤§à¤¨ 
+                    à¤†à¤£à¤¿ à¤¸à¥‡à¤µà¥‡à¤¦à¥à¤µà¤¾à¤°à¥‡ à¤®à¤¹à¤¿à¤²à¤¾ à¤¸à¤•à¥à¤·à¤®à¥€à¤•à¤°à¤£\" : 
+                    \"Empowering women through education, awareness and service\"\n    },\n    {\n      image: 
+                    \"/images/yoga_camp.jpg\",\n      title: language === \"mr\" ? \"à¥§à¥¯à¥à¥¦ à¤ªà¤¾à¤¸à¥‚à¤¨ 
+                    à¤¸à¤®à¤¾à¤œà¤¸à¥‡à¤µà¤¾\" : \"Serving Society Since 1970\",\n      subtitle: language === \"mr\" 
+                    ? \"à¤¨à¤¿à¤°à¤¾à¤§à¤¾à¤°à¤¾à¤‚à¤¨à¤¾ à¤¹à¤•à¥à¤•à¤¾à¤šà¥‡ à¤˜à¤° à¤†à¤£à¤¿ 
+                    à¤¸à¥à¤µà¤ªà¥à¤¨à¤¾à¤‚à¤¨à¤¾ à¤¨à¤µà¥€ à¤¦à¤¿à¤¶à¤¾\" : \"A home for homeless to nourish their 
+                    dreams\"\n    }\n  ], [language]);","StartLine":53,"TargetContent":"  const slides = useMemo(() => 
+                    [\n    {\n      image: \"/images/5.jpeg\",\n      title: language === \"mr\" ? \"à¥§à¥¯à¥à¥¦ 
+                    à¤ªà¤¾à¤¸à¥‚à¤¨ à¤¸à¤®à¤¾à¤œà¤¸à¥‡à¤µà¤¾\" : \"Serving Society Since 1970\",\n      subtitle: 
+                    language === \"mr\" ? \"à¤¶à¤¿à¤•à¥à¤·à¤£, à¤ªà¥à¤°à¤¬à¥‹à¤§à¤¨ à¤†à¤£à¤¿ 
+                    à¤¸à¥‡à¤µà¥‡à¤¦à¥à¤µà¤¾à¤°à¥‡ à¤®à¤¹à¤¿à¤²à¤¾ à¤¸à¤•à¥à¤·à¤®à¥€à¤•à¤°à¤£\" : \"Empowering women 
+                    through education, awareness and service\"\n    },\n    {\n      image: 
+                    \"/images/nivedita_bhavan.jpg\",\n      title: language === \"mr\" ? \"à¥§à¥¯à¥à¥¦ à¤ªà¤¾à¤¸à¥‚à¤¨ 
+                    à¤¸à¤®à¤¾à¤œà¤¸à¥‡à¤µà¤¾\" : \"Serving Society Since 1970\",\n      subtitle: language === \"mr\" 
+                    ? \"à¤®à¤¹à¤¿à¤²à¤¾à¤‚à¤¸à¤¾à¤à¥€ à¤•à¥Œà¤¶à¤²à¥à¤¯ à¤ªà¥à¤°à¤¶à¤¿à¤•à¥à¤·à¤£\" : \"Skill 
+                    Training For Wom
+                    <truncated 16537 bytes>
+TargetFile        : "c:\\bnp\\bnp-sangli-glow-main\\bnp-sangli-glow-main\\src\\routes\\_public.index.tsx"
+toolAction        : "Updating hero section"
+toolSummary       : "Update hero section"
+
+
+

@@ -1,0 +1,320 @@
+@import "tailwindcss";
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+html, body {
+  position: relative;
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 6px);
+  --radius-md: calc(var(--radius) - 4px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 12px);
+  --radius-3xl: calc(var(--radius) + 20px);
+  --radius-4xl: calc(var(--radius) + 32px);
+
+  --font-sans: "Poppins", "Sora", "Inter", system-ui, sans-serif;
+  --font-display: "Mukta", "Bricolage Grotesque", "Inter", system-ui, sans-serif;
+
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+}
+
+/* 
+ * User Defined Traditional Maroon Theme - Premium Edition
+ * Primary: #7F1D1D (Dark Maroon)
+ * Secondary: #F43F5E (Rose 500)
+ * Background: #FFFBFB (Soft White with Red Tint)
+ */
+:root {
+  --radius: 2rem;
+
+  --background: #fdfbf7;
+  --foreground: #312723;
+
+  --card: #ffffff;
+  --card-foreground: #312723;
+  --popover: #ffffff;
+  --popover-foreground: #312723;
+
+  /* Deep Royal Maroon */
+  --primary: #4a1520;
+  --primary-foreground: #fdf8f6;
+
+  /* Vibrant Rose Accent */
+  --secondary: #e11d48;
+  --secondary-foreground: #ffffff;
+
+  --accent: #fce7e1;
+  --accent-foreground: #4a1520;
+
+  --muted: #f9f2f0;
+  --muted-foreground: #6b5c58;
+
+  --destructive: #cc2d3a;
+  --destructive-foreground: #ffffff;
+
+  --border: #ece1de;
+  --input: #ece1de;
+  --ring: #4a1520;
+
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.5);
+
+  --gradient-gold: linear-gradient(135deg, #FFD700, #FFA500);
+  --gradient-maroon: linear-gradient(135deg, #4a1520, #7f1d1d);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Hide scrollbar */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+  }
+
+  html::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari and Opera */
+  }
+
+
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(at 0% 0%, oklch(0.65 0.22 15 / 0.03) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, oklch(0.28 0.12 20 / 0.03) 0px, transparent 50%);
+    background-attachment: fixed;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+}
+
+@layer components {
+  .glass {
+    background-color: var(--glass-bg);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px 0 rgba(127, 29, 29, 0.05);
+  }
+
+  .glass-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 10px 30px -10px rgba(127, 29, 29, 0.1);
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .glass-card:hover {
+    box-shadow: 0 30px 60px -15px rgba(127, 29, 29, 0.2);
+    transform: translateY(-8px) scale(1.01);
+    border-color: oklch(0.28 0.12 20 / 0.2);
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .premium-button {
+    @apply relative overflow-hidden transition-all duration-500 active:scale-95;
+    background: var(--gradient-maroon);
+    box-shadow: 0 10px 20px -5px rgba(127, 29, 29, 0.3);
+  }
+
+  .premium-button::after {
+    content: "";
+    @apply absolute inset-0 opacity-0 transition-opacity duration-500 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full;
+  }
+
+  .premium-button:hover::after {
+    @apply opacity-100 translate-x-full;
+    transition: transform 0.8s ease-in-out;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-slow-spin {
+    animation: spin 12s linear infinite;
+  }
+
+  .animate-marquee-slow {
+    animation: marquee 160s linear infinite;
+  }
+
+  .animate-marquee-slow:hover {
+    animation-play-state: paused;
+  }
+}
+
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* 
+ * Marathi Specific Enhancements 
+ * Ensures Devanagari script is as premium and attractive as the English version
+ */
+
+
+[lang="mr"] * {
+  letter-spacing: normal !important;
+}
+
+[lang="mr"] body {
+  line-height: 1.7;
+  /* More breathing room for Devanagari */
+}
+
+[lang="mr"] h1,
+[lang="mr"] h2,
+[lang="mr"] h3,
+[lang="mr"] h4,
+[lang="mr"] h5,
+[lang="mr"] h6 {
+  font-family: "Khand", sans-serif;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+[lang="mr"] .font-black:not(h1, h2, h3, h4, h5, h6) {
+  font-weight: 800;
+  /* Only reduce weight for body text/smaller elements */
+}
+
+
+
+/* Parity maintained via global styles */
+
+/* Subtle size adjustments for Marathi readability */
+[lang="mr"] p {
+  font-size: 1.05em;
+}
+
+[lang="mr"] .glass-card {
+  border-color: rgba(74, 21, 32, 0.1);
+  box-shadow: 0 10px 40px -10px rgba(74, 21, 32, 0.08);
+}
+
+/* Premium Animations & Effects */
+@keyframes gold-shine {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.gold-shine-text {
+  background: linear-gradient(
+    90deg, 
+    #fbbf24 0%, 
+    #fef08a 25%, 
+    #fbbf24 50%, 
+    #fef08a 75%, 
+    #fbbf24 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gold-shine 4s linear infinite;
+}

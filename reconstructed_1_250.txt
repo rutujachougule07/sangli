@@ -1,0 +1,250 @@
+﻿import { createFileRoute } from '@tanstack/react-router';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import {
+Award,
+GraduationCap,
+HeartHandshake,
+Quote,
+Star,
+Calendar,
+Users,
+Shield
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { HIGHLIGHTS, STATS, TESTIMONIALS, ORG } from '@/lib/site-data';
+import { AnimatedCounter } from '@/components/AnimatedCounter';
+import { SectionHeading } from '@/components/SectionHeading';
+import { useState, useEffect, useRef, useMemo } from 'react';
+import { MessageCircle } from 'lucide-react';
+import { getReviews } from '@/lib/firebase-utils';
+
+
+import { useLanguage } from '@/hooks/use-language';
+
+export const Route = createFileRoute('/_public/')({
+component: RouteComponent,
+});
+
+function RouteComponent() {
+const [currentSlide, setCurrentSlide] = useState(0);
+const [dynamicReviews, setDynamicReviews] = useState<any[]>([]);
+const containerRef = useRef<HTMLDivElement>(null);
+const { language, t } = useLanguage();
+
+useEffect(() => {
+const unsubscribe = getReviews((data) => {
+setDynamicReviews(data);
+});
+return () => unsubscribe();
+}, []);
+
+const displayReviews: any[] = TESTIMONIALS;
+
+const { scrollYProgress } = useScroll({
+target: containerRef,
+offset: ["start start", "end end"]
+});
+
+// Parallax transforms
+const heroY = useTransform(scroll
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+animate={idx === currentSlide ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+transition={{ duration: 0.55, delay: 0.32, ease: "easeOut" }}
+>
+à¤¨à¤¿à¤µà¥‡à¤¦à¤¿à¤¤à¤¾
+</motion.span>
+</div>
+{/* Row 2: à¤ªà¥à¤°à¤¤à¤¿à¤·à¥à¤ à¤¾à¤¨ alone */}
+<motion.span
+className="text-white block -mt-1 sm:-mt-2 md:-mt-2.5 lg:-mt-4"
+initial={{ opacity: 0, y: 30 }}
+animate={idx === currentSlide ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+transition={{ duration: 0.55, delay: 0.49, ease: "easeOut" }}
+>
+à¤ªà¥à¤°à¤¤à¤¿à¤·à¥à¤ à¤¾à¤¨
+</motion.span>
+</div>
+) : (
+<div className="flex flex-col items-center text-center">
+{/* Row 1: Bhagini + Nivedita side by side */}
+<div className="flex flex-wrap items-center justify-center gap-3 sm:gap-5">
+<motion.span
+className="text-white inline-block"
+initial={{ opacity: 0, y: 30 }}
+animate={idx === currentSlide ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+transition={{ duration: 0.55, delay: 0.15, ease: "easeOut" }}
+>
+Bhagini
+</motion.span>
+
+
+
+
+
+
+
+
+
+
+
+
+initial={{ opacity: 0, y: 30 }}
+animate={idx === currentSlide ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+transition={{ duration: 0.55, delay: 0.49, ease: "easeOut" }}
+>
+Pratishthan
+</motion.span>
+</div>
+)}
+</div>
+<motion.p
+initial={{ opacity: 0, y: 15 }}
+animate={idx === currentSlide ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
+transition={{ duration: 0.5, delay: 0.45, ease: "easeOut" }}
+className={cn(
+"font-bold max-w-2xl leading-relaxed text-white/95 text-center",
+language === "mr" ? "text-sm sm:text-xl" : "text-sm sm:text-2xl"
+)}
+style={{ fontFamily: '"Poppins", sans-serif', textShadow: '0 2px 8px rgba(0,0,0,0.95), 0 1px 2px rgba(0,0,0,0.95)' }}
+>
+{slide.subtitle}
+</motion.p>
+</motion.div>
+))}
+</div>
+</motion.div>
+</div>
+
+
+{/* Floating Background Elements */}
+<motion.div
+animate={{
+y: [0, -20, 0],
+rotate: [0, 5, 0]
+}}
+transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+className="absolute top-1/4 right-10 w-64 h-64 bg-amber-400/10 rounded-full blur-[100px] z-0"
+/>
+<motion.div

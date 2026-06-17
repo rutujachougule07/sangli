@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BNP 'Seva Gatha' News Card Editor</title>
+  
+  <!-- Modern Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800;900&family=Mukta:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            devanagari: ['Noto Sans Devanagari', 'sans-serif'],
+            mukta: ['Mukta', 'sans-serif'],
+          },
+          colors: {
+            bnpBlue: '#152954',
+            bnpGold: '#d4a843',
+            bnpCrimson: '#991b1b',
+            cardBg: '#fffdf5',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Premium styling scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #1e1e24;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #4a4a5a;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #d4a843;
+    }
+
+    /* Card styling */
+    .card-shadow {
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.4);
+    }
+    
+    .card-border-gold {
+      border: 2px solid #d4a843;
+    }
+
+    /* Print styling */
+    @media print {
+      body {
+        background: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-full {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-shadow: none !important;
+        transform: none !important;
+      }
+      .card-canvas-container {
+        padding: 0 !important;
+        background: transparent !important;
+      }
+    }
+
+    /* Columns settings */
+    .columns-3 {
+      columns: 3;
+      column-gap: 24px;
+      column-rule: 1px dashed rgba(212, 168, 67, 0.25);
+    }
+    
+    .columns-2 {
+      columns: 2;
+      column-gap: 28px;
+      column-rule: 1px dashed rgba(212, 168, 67, 0.25);
+    }
+    
+    .columns-1 {
+      columns: 1;
+    }
+
+    /* Dropcap custom text alignment */
+    .dropcap-char {
+      float: left;
+      font-size: 52px;
+      line-height: 42px;
+      padding-top: 4px;
+      padding-right: 8px;
+      font-weight: 900;
+      color: #991b1b;
+      font-family: 'Noto Sans Devanagari', sans-serif;
+    }
+
+    /* Outline on contenteditable hover/focus to indicate interactivity */
+    [contenteditable="true"]:hover {
+      background-color: rgba(212, 168, 67, 0.08);
+      outline: 1px dashed #d4a843;
+      border-radius: 2px;
+      cursor: text;
+    }
+    [contenteditable="true"]:focus {
+      background-color: rgba(212, 168, 67, 0.12);
+      outline: 2px solid #d4a843;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body class="bg-[#12131a] text-slate-200 font-sans min-height-screen flex flex-col overflow-x-hidden">
+
+  <!-- Top Sticky Navigation -->
+  <header class="no-print bg-[#1a1b24] border-b border-slate-800 sticky top-0 z-50 px-6 py-4 flex items-center justify-between shadow-lg">
+    <div class="flex items-center gap-3">
+      <!-- BNP Logo icon -->
+      <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center border-2 border-bnpBlue shadow">
+        <span class="text-bnpBlue font-black text-xs font-devanagari tracking-tighter">BNP</span>
+      </div>
+      <div>
+        <h1 class="text-lg font-black tracking-tight text-white flex items-center gap-2">
+          'Seva Gatha' Card Generator <span class="bg-amber-500/10 text-amber-400 text-[10px] font-bold px-2 py-0.5 rounded-full border border-amber-500/20">Editor Pro</span>
+        </h1>
+        <p class="text-xs text-slate-400">Recreate & customize beautifully styled newspaper cards with ease</p>
+      </div>
+    </div>
+
+    <!-- Presets and quick actions -->
+    <div class="flex items-center gap-3">
+      <button onclick="loadPreset('sukanya')" class="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
+        ✨ Sukanya Sammelan (New)
+      </button>
+      <button onclick="loadPreset('marathi')" class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
+        🇮🇳 Marathi Centenary
+      </button>
+      <button onclick="loadPreset('hindi')" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
+        🇮🇳 Hindi Template
+      </button>
+      <div class="h-6 w-px bg-slate-800"></div>
+      <button onclick="togglePreviewMode()" id="previewBtn" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
+        👁️ Preview Mode
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Editor Area -->
+  <main class="flex-1 flex flex-col lg:flex-row overflow-hidden">
+    
+    <!-- Left Sidebar: Controls (No-print) -->
+    <section id="sidebarPanel" class="no-print w-full lg:w-[420px] bg-[#171821] border-r border-slate-800 p-6 overflow-y-auto max-h-[calc(100vh-73px)] shrink-0 flex flex-col gap-6">
+      
+      <!-- Preset Notice -->
+      <div class="bg-slate-800/40 rounded-xl p-4 border border-slate-700/50">
+        <h3 class="text-xs font-black text-amber-400 uppercase tracking-wider mb-1">💡 Pro Tips</h3>
+        <ul class="text-xs text-slate-300 space-y-1.5 list-disc pl-4">
+          <li>You can click and edit <strong>any text directly on the card itself</strong>!</li>
+          <li>Choose from the quick presets above to swap languages instantly.</li>
+          <li>Adjust the sidebar parameters below to fine-tune layout settings.</li>
+        </ul>
+      </div>
+
+      <!-- Accordion Section 1: Card branding & header -->
+      <div class="flex flex-col gap-4 border-b border-slate-800 pb-5">
+        <h3 class="text-sm font-bold text-white tracking-wide border-l-2 border-amber-500 pl-2">1. Header & Branding</h3>
+        
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1.5">Top Banner Tab Text</label>
+          <input type="text" id="inputBannerText" oninput="updateCardText('cardBannerText', this.value)" class="w-full bg-[#20212c] border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500" value="सेवा गाथा">
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1.5">Main Title Text</label>
+          <textarea id="inputTitleText" oninput="updateCardText('cardTitle', this.value.replace(/\n/g, '<br>'))" rows="2" class="w-full bg-[#20212c] border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500 font-devanagari font-bold">डॉ. घाणेकर जन्मशताब्दीदिनी&#13;&#10;आज विविध कार्यक्रम</textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1.5">Sub-title Text</label>
+          <input type="text" id="inputSubtitleText" oninput="updateCardText('cardSubtitle', this.value)" class="w-full bg-[#20212c] border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500 font-devanagari" value="भगिनी निवेदिता प्रतिष्ठानतर्फे प्रकट मुलाखत">
+        </div>
+        
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-medium text-slate-400 mb-1.5">Author Prefix</label>
+            <input type="text" id="inputAuthorPrefix" oninput="updateAuthorPrefix(this.value)" class="w-full bg-[#20212c] border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500" value="■">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-400 mb-1.5">Author Name</label>
+            <input type="text" id="inputAuthorName" oninput="updateCardText('cardAuthor', this.value)" class="w-full bg-[#20212c] border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500 font-devanagari font-bold" value="विनिता कुसुम">
+          </div>
+        </div>
+      </div>
+
+      <!-- Accordion Section 2: Article & Column settings -->
+      <div class="flex flex-col gap-4 border-b border-slate-800 pb-5">
+        <h3 class="text-sm font-bold text-white tracking-wide border-l-2 border-amber-500 pl-2">2. Article & Layout</h3>
+        
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-medium text-slate-400 mb-1.5">Column Count</label>
+            <select id="selectCols" onchange="changeColumns(this.value)" class="w-full bg-[#20212c] border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500">
+              <option value="1">1 Column</option>
+              <option value="2">2 Columns</option>
+              <option value="3" selected>3 Columns</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-400 mb-1.5">Drop-Cap Letter</label>
+            <input type="text" id="inputDropCap" max="2" oninput="updateDropCap(this.value)" class="w-full bg-[#20212c] border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500 text-center font-devanagari font-bold" value="सा">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1.5">Edit Article Body HTML</label>
+          <p class="text-[10px] text-slate-500 mb-1.5">Use simple text or HTML paragraphs. Add heading spans with class <code>section-head</code> for section headers.</p>
+          <textarea id="inputArticleBody" oninput="updateArticleBody(this.value)" rows="8" class="w-full bg-[#20212c] border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500 font-devanagari leading-relaxed"></textarea>
+        </div>
+      </div>
+
+      <!-- Accordion Section 3: Media Upload -->
+      <div class="flex flex-col gap-4 border-b border-slate-800 pb-5">
+        <h3 class="text-sm font-bold text-white tracking-wide border-l-2 border-amber-500 pl-2">3. Article Image</h3>
+        
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">Image Visibility</label>
+          <div class="flex items-center gap-4 mt-1.5">
+            <label class="inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="checkImageVisible" onchange="toggleImage(this.checked)" class="sr-only peer" checked>
+              <div class="relative w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-350 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-500"></div>
+              <span class="ms-2 text-xs font-medium text-slate-300">Show Image in Column 2</span>
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1.5">Upload Custom Image</label>
+          <div class="flex items-center justify-center w-full">
+            <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed rounded-lg cursor-pointer bg-[#20212c] hover:bg-[#282936] border-slate-700 hover:border-amber-500/50 transition">
+              <div class="flex flex-col items-center justify-center pt-3 pb-3">
+                <svg class="w-6 h-6 mb-1 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                <p class="text-xs text-slate-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                <p class="text-[9px] text-slate-500">PNG, JPG or WEBP</p>
+              </div>
+              <input id="dropzone-file" type="file" accept="image/*" onchange="handleImageUpload(event)" class="hidden" />
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1.5">Image Layout Styling</label>
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <span class="text-[10px] text-slate-500 block mb-1">Image Size (Width %)</span>
+              <input type="range" min="40" max="100" value="100" oninput="updateImageStyle('width', this.value + '%')" class="w-full accent-amber-500">
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-500 block mb-1">Border Radius</span>
+              <input type="range" min="0" max="20" value="8" oninput="updateImageStyle('borderRadius', this.value + 'px')" class="w-full accent-amber-500">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Accordion Section 4: Footer customization -->
+      <div class="flex flex-col gap-4 pb-4">
+        <h3 class="text-sm font-bold text-white tracking-wide border-l-2 border-amber-500 pl-2">4. Footer Branding</h3>
+        
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <label class="block text-xs font-medium text-slate-400 mb-1">Date</label>
+            <input type="text" id="inputFooterDate" oninput="updateCardText('cardFooterDate', this.value)" class="w-full bg-[#20212c] border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500 font-devanagari" value="१-१५ जुलै, २०२५">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-400 mb-1">Badge</label>
+            <input type="text" id="inputFooterBadge" oninput="updateCardText('cardFooterBadge', this.value)" class="w-full bg-[#20212c] border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500 font-devanagari" value="पाथेय कण">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-400 mb-1">Page</label>
+            <input type="text" id="inputFooterPage" oninput="updateCardText('cardFooterPage', this.value)" class="w-full bg-[#20212c] border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500 font-devanagari" value="११">
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom branding / developer link -->
+      <div class="mt-auto pt-4 border-t border-slate-800 text-center">
+        <p class="text-[10px] text-slate-600">Built with ❤️ for Bhagini Nivedita Pratishthan, Sangli</p>
+      </div>
+
+    </section>
+
+    <!-- Right Workspace Area: Interactive Canvas -->
+    <section class="flex-1 bg-[#1a1b24] p-6 overflow-y-auto flex flex-col items-center justify-center relative min-h-[calc(100vh-73px)]">
+      
+      <!-- Canvas Controls Overlay (Sticky above card) -->
+      <div class="no-print bg-[#212330]/90 backdrop-blur-md px-6 py-3 rounded-2xl border border-slate-800 flex items-center justify-between gap-6 shadow-xl mb-8 w-full max-w-[760px]">
+        <div class="flex items-center gap-2">
+          <span class="flex h-2.5 w-2.5 relative">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+          </span>
+          <span class="text-xs font-bold text-slate-300">Live WYSIWYG Card Editor</span>
+        </div>
+        
+        <div class="flex items-center gap-2.5">
+          <button onclick="window.print()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl text-xs font-black tracking-wide shadow-md hover:shadow-indigo-600/20 transition flex items-center gap-1.5">
+            🖨️ Print / PDF
+          </button>
+          
+          <button onclick="downloadHighResImage()" id="downloadBtn" class="bg-amber-500 hover:bg-amber-400 text-[#1a1b24] px-4 py-2 rounded-xl text-xs font-black tracking-wide shadow-md hover:shadow-amber-500/20 transition flex items-center gap-1.5">
+            ⬇️ Download Image
+          </button>
+        </div>
+      </div>
+
+      <!-- Card container (Aspect Ratio Controlled) -->
+      <div class="card-canvas-container p-6 bg-slate-900/30 rounded-3xl border border-slate-800/40 shadow-inner flex items-center justify-center w-full max-w-[808px] overflow-x-auto">
+        
+        <!-- THE CARD TO BE EXPORTED (W: 760px) -->
+        <div id="sevaGathaCard" class="print-full w-[760px] bg-cardBg card-border-gold rounded-lg overflow-hidden position-relative p-2 pb-5 flex flex-col text-slate-900 card-shadow transition-transform duration-300 origin-center shrink-0">
+          
+          <!-- Top Orange Stripe -->
+          <div class="h-3.5 bg-[#f09a1a] w-full relative border-b border-black">
+            <!-- सेवा गाथा Tab Overlay -->
+            <div class="absolute top-0 left-6 bg-cardBg border-x border-b border-black px-4 py-0.5 flex items-center gap-1.5 shadow-[0_2px_4px_rgba(0,0,0,0.1)]">
+              <span class="text-bnpCrimson text-[8px] font-black leading-none">■</span>
+              <span id="cardBannerText" class="text-black font-extrabold text-[10px] uppercase tracking-wider leading-none font-sans" contenteditable="true" onblur="syncInputText('inputBannerText', this.innerText)">सेवा गाथा</span>
+            </div>
+          </div>
+
+          <!-- Header Section (Title, Subtitle, BNP logo) -->
+          <div class="px-6 pt-7 pb-4 flex items-center justify-between gap-6 border-b-2 border-bnpGold relative">
+            <!-- Left spacer to center heading if logo takes right side -->
+            <div class="w-[86px] hidden sm:block"></div>
+            
+            <div class="flex-1 text-center">
+              <h2 id="cardTitle" class="font-devanagari font-black text-3xl text-slate-950 leading-snug" contenteditable="true" onblur="syncInputText('inputTitleText', this.innerHTML.replace(/<br>/g, '\n'))">
+                डॉ. घाणेकर जन्मशताब्दीदिनी<br>आज विविध कार्यक्रम
+              </h2>
+              <h3 id="cardSubtitle" class="font-devanagari font-bold text-base text-bnpCrimson mt-2 tracking-wide" contenteditable="true" onblur="syncInputText('inputSubtitleText', this.innerText)">
+                'भगिनी निवेदिता प्रतिष्ठानतर्फे प्रकट मुलाखत'
+              </h3>
+            </div>
+            
+            <!-- BNP Stretched Oval Logo -->
+            <div class="w-[86px] h-[86px] rounded-full border-[3px] border-bnpBlue bg-white flex items-center justify-center p-0.5 shadow-md flex-shrink-0">
+              <svg class="w-full h-full" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="46" fill="#fff" stroke="#152954" stroke-width="4"/>
+                <circle cx="50" cy="50" r="41" fill="none" stroke="#152954" stroke-width="1.2"/>
+                <text x="50" y="65" text-anchor="middle" font-size="44" font-weight="900" fill="#152954" font-family="'Arial Black', sans-serif" style="transform: scale(0.64, 1.28); transform-origin: 50% 50%;">BNP</text>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Card Body -->
+          <div class="px-6 py-5 flex-1 flex flex-col">
+            <!-- Author Line -->
+            <div class="flex items-center gap-1.5 text-bnpCrimson font-devanagari font-extrabold text-sm mb-3.5">
+              <span id="cardAuthorPrefix">■</span>
+              <span id="cardAuthor" contenteditable="true" onblur="syncInputText('inputAuthorName', this.innerText)">विनिता कुसुम</span>
+            </div>
+
+            <!-- 3-Column Text Area -->
+            <div id="cardContentArea" class="columns-3 text-justify text-[12px] leading-relaxed text-slate-800 font-devanagari flex-1">
+              
+              <!-- First paragraph holding drop-cap and opening text -->
+              <p class="mb-3.5 break-inside-avoid">
+                <span id="cardDropCap" class="dropcap-char" contenteditable="true" onblur="syncInputDropCap(this.innerText)">सा</span><span id="cardBodyParagraph1" contenteditable="true">ंगली, ता. २० : येथील भगिनी निवेदिता प्रतिष्ठानच्या संस्थापिका व समाजसेविका डॉ. कुसुमताई घाणेकर यांच्या जन्मशताब्दीनिमित्त संमेलन, प्रकाशन, प्रकट मुलाखत आदी विविध कार्यक्रम होणार असल्याची माहिती अध्यक्षा नीता दामले, सचिव विनिता तेलंग यांनी दिली.</span>
+              </p>
+
+              <!-- Dynamic paragraphs and image container placed in column flow -->
+              <div id="cardBodyFlow" class="contents">
+                <!-- Rest of content gets populated dynamically -->
+              </div>
+
+            </div>
+
+            <!-- Footer Line -->
+            <div class="mt-6 pt-4 border-t border-bnpGold flex items-center justify-between text-bnpCrimson font-devanagari font-black text-xs px-2 select-none">
+              <div class="flex-1 flex items-center justify-center gap-4">
+                <span id="cardFooterDate" contenteditable="true" onblur="syncInputText('inputFooterDate', this.innerText)">— १-१५ जुलै, २०२५</span>
+                <span id="cardFooterBadge" class="bg-bnpCrimson text-white px-2 py-0.5 rounded text-[10px] font-extrabold tracking-wider" contenteditable="true" onblur="syncInputText('inputFooterBadge', this.innerText)">पाथेय कण</span>
+                <span id="cardFooterPage" contenteditable="true" onblur="syncInputText('inputFooterPage', this.innerText)">११</span>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- HTML2Canvas Library Loader -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+  <!-- Application Logic -->
+  <script>
+    // PRESETS FOR QUICK LOADING
+    const presets = {
+      sukanya: {
+        banner: "सेवा गाथा",
+        title: "भगिनी निवेदिता प्रतिष्ठानतर्फे<br>उद्या सुकन्या संमेलन",
+        subtitle: "लोकमत न्यूज नेटवर्क",
+        author: "विशेष प्रतिनिधी",
+        authorPrefix: "■",
+        dropCap: "सा",
+        footerDate: "— २१ मे, २०२६",
+        footerBadge: "लोकमत",
+        footerPage: "०३",
+        columns: "3",
+        imageVisible: true,
+        imageSrc: "/bnp-learning.png",
+        imageWidth: "100%",
+        imageBorderRadius: "8px",
+        bodyHtml: `<p class="mb-3">ंगली : भगिनी निवेदिता प्रतिष्ठानच्या संस्थापिका डॉ. कुसुमताई घाणेकर यांचे जन्मशताब्दी वर्ष व संस्थेच्या ५५ व्या वर्षानिमित्त शनिवारी, दि. २१ रोजी सकाळी १०.३० वाजता निवेदिता सुकन्या संमेलन भावे नाट्य मंदिरात आयोजित केले आहे.</p>
+
+<p class="mb-3">यावेळेस प्रतिष्ठान मधून घडलेल्या शंभर सुकन्यांची यशोगाथा व कुसुमताईच्या आठवणी असलेल्या 'कुसुमगंध' स्मरणिकेचे प्रकाशन होणार आहे. प्रतिष्ठानच्या अध्यक्षा नीता दामले व सचिव विनिता तेलंग यांनी पत्रकार परिषदेत ही माहिती दिली.</p>
+
+<!-- inline image element -->
+<div id="inlineCardImageContainer" class="my-3 break-inside-avoid">
+  <img id="inlineCardImage" src="/bnp-learning.png" class="w-full border border-bnpGold rounded-lg shadow-sm block" alt="BNP activities" onerror="this.onerror=null; this.src='/bnp-achievements.jpg'">
+</div>
+
+<span class="section-head block font-extrabold text-slate-900 border-l-4 border-bnpGold pl-2.5 my-3 text-[12px]">५५ वर्षे सेवाकार्य</span>
+
+<p class="mb-3">त्या म्हणाल्या, पीडित महिला व मुले यांच्यासाठी कुसुमताईंनी १९७० मध्ये भगिनी निवेदिता प्रतिष्ठानची स्थापना केली. गेल्या ५५ वर्षात संस्थेने महिलांसाठी अनेक उपक्रम राबवले.</p>
+
+<span class="section-head block font-extrabold text-slate-900 border-l-4 border-bnpGold pl-2.5 my-3 text-[12px]">विविध सेवा प्रकल्प</span>
+
+<p class="mb-3">नोकरदार महिलांसाठी वसतिगृहे, अनाथाश्रम, कौटुंबिक सल्ला व समुपदेशन केंद्रा, अडचणीतील महिलांसाठी स्वाधार गृह, कौशल्य विकास केंद्र असे अनेक प्रकल्प चालू आहेत. प्रतिष्ठानच्या उपक्रमातून विपरीत परिस्थितीत असलेल्या मुली व महिलांनी परिस्थितीवर मात करत आयुष्य घडवले.</p>
+
+<span class="section-head block font-extrabold text-slate-900 border-l-4 border-bnpGold pl-2.5 my-3 text-[12px]">मान्यवरांची उपस्थिती</span>
+
+<p class="mb-3">यावेळी नीलिमा भिलवडीकर, ऋता जोग, प्रतीक्षा जोशी, काव्यश्री नलावडे, डॉ. शुभदा गोखले उपस्थित होत्या.</p>`
+      },
+      marathi: {
+        banner: "सेवा गाथा",
+        title: "डॉ. घाणेकर जन्मशताब्दीदिनी<br>आज विविध कार्यक्रम",
+        subtitle: "'भगिनी निवेदिता प्रतिष्ठानतर्फे प्रकट मुलाखत'",
+        author: "विनिता कुसुम",
+        authorPrefix: "■",
+        dropCap: "सा",
+        footerDate: "— १-१५ जुलै, २०२५",
+        footerBadge: "पाथेय कण",
+        footerPage: "११",
+        columns: "3",
+        imageVisible: true,
+        imageSrc: "/bnp-learning.png",
+        imageWidth: "100%",
+        imageBorderRadius: "8px",
+        // Parsed content flow with sections
+        bodyHtml: `<p class="mb-3">विष्णुदास भावे नाट्यगृहात शनिवारी (ता. २१) सकाळी साडेदहा वाजता होणार आहे.</p>
+
+<span class="section-head block font-extrabold text-slate-900 border-l-4 border-bnpGold pl-2.5 my-3 text-[12px]">निवेदिता सुकन्या संमेलन</span>
+
+<p class="mb-3">दामले व पागे म्हणाल्या, "भगिनी निवेदिता प्रतिष्ठानच्या ५५ व्या वर्षपूर्तीनिमित्त व डॉ. कुसुमताई घाणेकर यांच्या जन्मशताब्दीनिमित्त निवेदिता सुकन्या संमेलन होईल. विविध उपक्रमांतून घडलेल्या निवडक १०० सुकन्यांच्या यशोगाथा, संस्थेची वाटचाल व कुसुमताईंच्या आठवणींवर..."</p>
+
+<!-- inline image element -->
+<div id="inlineCardImageContainer" class="my-3 break-inside-avoid">
+  <img id="inlineCardImage" src="/bnp-learning.png" class="w-full border border-bnpGold rounded-lg shadow-sm block" alt="BNP activities" onerror="this.onerror=null; this.src='/bnp-achievements.jpg'">
+</div>
+
+<span class="section-head block font-extrabold text-slate-900 border-l-4 border-bnpGold pl-2.5 my-3 text-[12px]">'कुसुमगंध' स्मरणिका प्रकाशन</span>
+
+<p class="mb-3">आधारित 'कुसुमगंध' स्मरणिकेचे प्रकाशन राष्ट्रीय स्वयंसेवक संघाचे जिल्हा संघचालक सुधीर चापोरकर यांच्याहस्ते होणार आहे.</p>
+
+<span class="section-head block font-extrabold text-slate-900 border-l-4 border-bnpGold pl-2.5 my-3 text-[12px]">सैन्यदलातील अनुभव व मुलाखत</span>
+
+<p class="mb-3">भारतीय सैन्यदलातील निवृत्त अधिकारी व 'अपराजिता' या पुस्तकाच्या लेखिका मेजर मोहिनी गर्गे-कुलकर्णी यांची प्रकट मुलाखत प्रतिष्ठानच्या सचिव विनिता तेलंग घेतील.</p>
+
+<p class="mb-3">सैन्यदलातील अनुभव, सध्याची युद्धस्थिती, सैन्यातील तरुणांचा सहभाग व संधी या विषयांवर गप्पा व प्रश्नोत्तरे असा कार्यक्रम होणार आहे.</p>
+
+<span class="section-head block font-extrabold text-slate-900 border-l-4 border-bnpGold pl-2.5 my-3 text-[12px]">मान्यवरांची उपस्थिती</span>
+
+<p class="mb-3">उपाध्यक्ष डॉ. अनिता पागे, नीलिमा भिलवडीकर, ऋता जोग, प्रतीक्षा जोशी, नसीम शेख, डॉ. शार्दुली तेरवाडकर, विद्या काळे, काव्यश्री नलवडे, मेघा गावडे, डॉ. शुभदा गोखले, अनघा लिमये आदी उपस्थित होते.</p>`
+      },
+      hindi: {
+        banner: "सेवा गाथा",
+        title: "महिलाओं को आत्मनिर्भर बनाने हेतु संकल्पबद्ध<br>‘भगिनी निवेदिता प्रतिष्ठान’",
+        subtitle: "'महिलाओं को स्वावलंबन और संस्कार देने वाला अनूठा प्रकल्प'",
+        author: "विनिता कुसुम",
+        authorPrefix: "■",
+        dropCap: "स",
+        footerDate: "— १-१५ जुलाई, २०२५",
+        footerBadge: "पाथेय कण",
+        footerPage: "११",
+        columns: "3",
+        imageVisible: true,
+        imageSrc: "/bnp-learning.png",
+        imageWidth: "100%",
+        imageBorderRadius: "8px",
+        bodyHtml: `<p class="mb-3">माज की वे बेटियां जिनका बचपन किसी अंधेरी गलियों में, समाज की कुप्रथाओं में या किसी गंभीर शारीरिक और मानसिक बीमारियों के नीचे दबकर रह जाता है, महाराष्ट्र (सांगली) के भगिनी निवेदिता प्रतिष्ठान ने ऐसी बेटियों का हाथ थामा और अपने आश्रय में न केवल सुपोषित किया बल्कि संस्कारों के साथ नेतृत्व क्षमतायुक्त बनाकर एक आदर्श समाज स्थापित करने के लिए प्रेरित भी किया।</p>
+
+<span class="section-head block font-extrabold text-slate-900 border-l-4 border-bnpGold pl-2.5 my-3 text-[12px]">जीवन को दी नई दिशा</span>
+
+<p class="mb-3">अप्रैल,1970 में डॉ. कुसुमताई घाणेकर द्वारा भगिनी निवेदिता प्रतिष्ठान की स्थापना हुई। इसके विभिन्न आयामों द्वारा अभी तक 14 हजार से ज्यादा बेटियों व महिलाओं ने सही मार्गदर्शन, शिक्षा व सहायता प्राप्त कर अपने जीवन को नयी दिशा दी।</p>
+
+<p class="mb-3">राष्ट्र सेविका समिति की कार्यकर्ता कुसुमताई आयुर्वेद चिकित्सक हैं। सरकारी अस्पतालों में महिलाओं और बच्चों की परिस्थितियों को देखकर उन्होंने महिलाओं को पूर्ण स्वस्थ करने के लिए केवल शारीरिक ही नहीं अपितु उनके मानसिक स्तर को भी सुदृढ़ और सक्षम बनाने, समाज की कुप्रथाएं, अशिक्षा, पौष्टिक आहार की कमी जैसे कई प्रश्नों का हल इस प्रकल्प के माध्यम से ढूंढा।</p>
+
+<p class="mb-3">निवेदिता प्रतिष्ठान ने सर्वप्रथम कम उम्र में अत्याचार का शिकार होने वाली या देह व्यापार में फंसी हुई पीड़ित लड़कियों व महिलाओं को आश्रय देकर माहेर (मां का घर) योजना आरंभ की। यही योजना (प्रकल्प) वर्तमान में 'स्वाधार' के नाम से जानी जाती है।</p>
+
+<!-- inline image element -->
+<div id="inlineCardImageContainer" class="my-3 break-inside-avoid">
+  <img id="inlineCardImage" src="/bnp-learning.png" class="w-full border border-bnpGold rounded-lg shadow-sm block" alt="BNP activities" onerror="this.onerror=null; this.src='/bnp-achievements.jpg'">
+</div>
+
+<span class="section-head block font-extrabold text-slate-900 border-l-4 border-bnpGold pl-2.5 my-3 text-[12px]">आत्मनिर्भर बनाने का प्रयास</span>
+
+<p class="mb-3">यहां किसी भी प्रकार की पीड़ित महिला को छह महीने से लेकर दो वर्ष तक निःशुल्क रखा जाता है। उनको शारीरिक, मानसिक, कानूनी काउंसलिंग, मेडिकल हेल्प तो मिलती ही है साथ ही कौशल विकास द्वारा आत्मनिर्भर बनाने का प्रयास भी किया जाता है। सरकारी योजनाओं के साथ सामंजस्य बिठाते हुए महिलाओं में जन जागृति शिविर, विविध उद्योग प्रशिक्षण, कैंटीन, स्टेशनरी की दुकान चलाना व ऑफिस की फाइलें बनाना, ब्यूटी पार्लर, पेपर बैग बनाने का प्रशिक्षण दिया जाता है।</p>
+
+<span class="section-head block font-extrabold text-slate-900 border-l-4 border-bnpGold pl-2.5 my-3 text-[12px]">एड्स पीड़ितों का आवासीय केन्द्र</span>
+
+<p class="mb-3">एचआईवी जैसी भयानक बीमारी, जिसके विषय में कोई कुछ भी नहीं जानता था, तब डॉ. कुसुमताई के साहस और निस्वार्थ सेवा का ही परिणाम था कि भगिनी निवेदिता प्रतिष्ठान संपूर्ण एशिया में पहला ऐसा प्रतिष्ठान बना जिसने एचआईवी पॉजिटिव लड़कियों व महिलाओं के लिए आवासीय उपचार केंद्र चलाया। जहां उनकी शिक्षा, स्वास्थ्य और कौशल विकास की संपूर्ण व्यवस्था सरकार व समाज के सहयोग से की। वर्तमान में सांगली के यशवंतनगर में एड्स बाधित लड़कियों का आवासीय आश्रम संचालित है।</p>
+
+<span class="section-head block font-extrabold text-slate-900 border-l-4 border-bnpGold pl-2.5 my-3 text-[12px]">वोकेशनल बोर्ड की मान्यता</span>
+
+<p class="mb-3">संस्था द्वारा वर्तमान में 2 अनाथाश्रम, 2 फैमिली काउंसलिंग सेंटर, पीड़ित महिलाओं के लिये अल्पकालीन निवास केंद्र 'स्वाधार', 'अन्नपूर्णा' फूड टेक्नोलॉजी प्रशिक्षण केंद्र और अल्पशिक्षित और जरूरतमंद लड़के-लड़कियों के लिये 'डॉ. कुसुमताई घाणेकर व्यवसाय प्रशिक्षण केंद्र' चलता है।</p>
+
+<p class="mb-3">इस सेंटर को वोकेशनल बोर्ड (व्यवसायिक शिक्षा बोर्ड) की मान्यता प्राप्त है। यहां पैरामेडिकल एवं फैशन डिजाइनिंग के कोर्स चलाए जाते हैं। पढ़ने वाली लड़कियों के लिए यहां छात्रावास सुविधा भी है।</p>
+
+<p class="mb-3">यह कहना अतिशयोक्ति नहीं होगी कि डगर कितनी भी मुश्किल क्यों न हो यदि दृढ़ इच्छाशक्ति है तो आपको मंजिल तक जरूर पहुंचाती है।</p>`
+      }
+    };
+
+    // ACTIVE APP STATE
+    let activePreset = 'sukanya';
+    let imageSrcDataUrl = null;
+
+    // Load presets
+    function loadPreset(key) {
+      activePreset = key;
+      const data = presets[key];
+      
+      // Update form inputs
+      document.getElementById('inputBannerText').value = data.banner;
+      document.getElementById('inputTitleText').value = data.title.replace(/<br>/g, '\n');
+      document.getElementById('inputSubtitleText').value = data.subtitle;
+      document.getElementById('inputAuthorPrefix').value = data.authorPrefix;
+      document.getElementById('inputAuthorName').value = data.author;
+      document.getElementById('inputDropCap').value = data.dropCap;
+      document.getElementById('selectCols').value = data.columns;
+      document.getElementById('checkImageVisible').checked = data.imageVisible;
+      
+      document.getElementById('inputFooterDate').value = data.footerDate.replace(/—\s*/, '');
+      document.getElementById('inputFooterBadge').value = data.footerBadge;
+      document.getElementById('inputFooterPage').value = data.footerPage;
+      
+      document.getElementById('inputArticleBody').value = data.bodyHtml;
+
+      // Update Card Preview
+      document.getElementById('cardBannerText').innerText = data.banner;
+      document.getElementById('cardTitle').innerHTML = data.title;
+      document.getElementById('cardSubtitle').innerText = data.subtitle;
+      document.getElementById('cardAuthorPrefix').innerText = data.authorPrefix;
+      document.getElementById('cardAuthor').innerText = data.author;
+      document.getElementById('cardDropCap').innerText = data.dropCap;
+      
+      document.getElementById('cardFooterDate').innerText = data.footerDate.startsWith('—') ? data.footerDate : '— ' + data.footerDate;
+      document.getElementById('cardFooterBadge').innerText = data.footerBadge;
+      document.getElementById('cardFooterPage').innerText = data.footerPage;
+
+      // Columns count class
+      changeColumns(data.columns);
+
+      // Paragraph body & drop cap sync
+      updateArticleBody(data.bodyHtml);
+
+      // Handle Image source
+      setTimeout(() => {
+        const img = document.getElementById('inlineCardImage');
+        if (img) {
+          img.src = imageSrcDataUrl || data.imageSrc;
+          toggleImage(data.imageVisible);
+        }
+      }, 50);
+    }
+
+    // Update in-card preview from form inputs
+    function updateCardText(elementId, text) {
+      const el = document.getElementById(elementId);
+      if (el) {
+        if (elementId === 'cardFooterDate' && !text.startsWith('—')) {
+          el.innerText = '— ' + text;
+        } else {
+          el.innerHTML = text;
+        }
+      }
+    }
+
+    // Sync input fields when user edits inside Card (WYSIWYG)
+    function syncInputText(inputId, text) {
+      const inputEl = document.getElementById(inputId);
+      if (inputEl) {
+        inputEl.value = text;
+      }
+    }
+
+    // Sync author prefix
+    function updateAuthorPrefix(val) {
+      document.getElementById('cardAuthorPrefix').innerText = val;
+    }
+
+    // Sync Drop Cap
+    function updateDropCap(val) {
+      document.getElementById('cardDropCap').innerText = val;
+    }
+    
+    function syncInputDropCap(val) {
+      document.getElementById('inputDropCap').value = val;
+    }
+
+    // Change Column classes
+    function changeColumns(num) {
+      const area = document.getElementById('cardContentArea');
+      area.className = area.className.replace(/columns-\d/, 'columns-' + num);
+    }
+
+    // Toggle Image container visibility
+    function toggleImage(visible) {
+      const container = document.getElementById('inlineCardImageContainer');
+      if (container) {
+        container.style.display = visible ? 'block' : 'none';
+      }
+      document.getElementById('checkImageVisible').checked = visible;
+    }
+
+    // Update custom image styles
+    function updateImageStyle(prop, value) {
+      const img = document.getElementById('inlineCardImage');
+      if (img) {
+        img.style[prop] = value;
+      }
+    }
+
+    // Update article body flow
+    function updateArticleBody(html) {
+      const flow = document.getElementById('cardBodyFlow');
+      
+      // Parse out the first paragraph text or drop-cap paragraph structure if possible
+      // For simple robust rendering, we'll put the HTML in the flow container.
+      flow.innerHTML = html;
+      
+      // Keep sync on editor input
+      document.getElementById('inputArticleBody').value = html;
+
+      // Restore image upload references if any
+      const img = document.getElementById('inlineCardImage');
+      if (img && imageSrcDataUrl) {
+        img.src = imageSrcDataUrl;
+      }
+    }
+
+    // Handle Image file upload and read as Base64 Data URL
+    function handleImageUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        imageSrcDataUrl = e.target.result;
+        
+        // Update both the preset definition and active image
+        const img = document.getElementById('inlineCardImage');
+        if (img) {
+          img.src = imageSrcDataUrl;
+        }
+        
+        // Ensure image is visible
+        toggleImage(true);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Toggle Sidebar visibility for preview mode
+    let isPreviewMode = false;
+    function togglePreviewMode() {
+      isPreviewMode = !isPreviewMode;
+      const sidebar = document.getElementById('sidebarPanel');
+      const btn = document.getElementById('previewBtn');
+      
+      if (isPreviewMode) {
+        sidebar.classList.add('hidden');
+        btn.innerHTML = '⚙️ Show Controls';
+        btn.classList.replace('bg-slate-700', 'bg-amber-500');
+        btn.classList.replace('text-white', 'text-slate-900');
+      } else {
+        sidebar.classList.remove('hidden');
+        btn.innerHTML = '👁️ Preview Mode';
+        btn.classList.replace('bg-amber-500', 'bg-slate-700');
+        btn.classList.replace('text-slate-900', 'text-white');
+      }
+    }
+
+    // HTML2Canvas download script at ultra-crisp resolution
+    async function downloadHighResImage() {
+      const btn = document.getElementById('downloadBtn');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '⏳ Processing...';
+      btn.disabled = true;
+
+      // Close editable outline highlights temporarily
+      const editables = document.querySelectorAll('[contenteditable="true"]');
+      editables.forEach(el => el.setAttribute('contenteditable', 'false'));
+
+      try {
+        const card = document.getElementById('sevaGathaCard');
+        
+        // Render canvas at 3.5x scale for premium print-ready clarity
+        const canvas = await html2canvas(card, {
+          scale: 3.5,
+          useCORS: true,
+          backgroundColor: '#fffdf5',
+          logging: false,
+          allowTaint: true
+        });
+
+        // Trigger file download
+        const link = document.createElement('a');
+        const fileNameSuffix = activePreset === 'sukanya' ? 'Sukanya_Sammelan' : (activePreset === 'marathi' ? 'Marathi_Centenary' : 'Hindi_Template');
+        link.download = `BNP_SevaGatha_${fileNameSuffix}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      } catch (err) {
+        console.error("Image export failed:", err);
+        alert("प्रतिमा डाउनलोड करताना त्रुटी आली. कृपया 'Print / PDF' पर्याय वापरा किंवा पुन्हा प्रयत्न करा.");
+      } finally {
+        // Re-enable contenteditable
+        editables.forEach(el => el.setAttribute('contenteditable', 'true'));
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }
+    }
+
+    // Initial Loading
+    document.addEventListener("DOMContentLoaded", () => {
+      loadPreset('sukanya');
+    });
+  </script>
+</body>
+</html>
