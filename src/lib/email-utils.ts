@@ -8,8 +8,8 @@ const PUBLIC_KEY = "arIRZSuM35WWmRtYW";
 
 // --- Admin Configuration ---
 // Update this email address to the client's official email when ready
-const VOLUNTEER_ADMIN_EMAIL = "rutuchougule07@gmail.com";
-const DONOR_ADMIN_EMAIL = "rutuchougule07@gmail.com";
+const VOLUNTEER_ADMIN_EMAIL = "bnpsangli@gmail.com";
+const DONOR_ADMIN_EMAIL = "bnpsangli@gmail.com";
 
 export const sendThankYouEmail = async (data: {
   to_name: string;
