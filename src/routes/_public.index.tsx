@@ -685,12 +685,12 @@ function RouteComponent() {
                   const index = i % TESTIMONIALS.length;
                   const name = language === "mr" ? (item.name_mr || t(`testimonials.card${index + 1}.name`)) : item.name;
                   const role = language === "mr" ? (item.role_mr || t(`testimonials.card${index + 1}.role`)) : item.role;
-                  const quote = language === "mr" ? (item.text_mr || item.quote_mr || t(`testimonials.card${index + 1}.quote`)) : (item.text || item.content || t(`testimonials.card${index + 1}.quote`));
+                  const quote = language === "mr" ? (item.content_mr || t(`testimonials.card${index + 1}.quote`)) : (item.content || t(`testimonials.card${index + 1}.quote`));
                   const avatar = item.avatar || name?.charAt(0) || "B";
 
                   return (
                     <div
-                      key={`${item.id || item.name}-${i}`}
+                      key={`${item.name}-${i}`}
                       className="w-[520px] shrink-0 whitespace-normal group"
                     >
                       <div className="h-full rounded-[2.5rem] p-12 bg-[#fdfbf7]/80 backdrop-blur-md border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.03)] hover:-translate-y-2 hover:shadow-[0_40px_100px_rgba(159,18,57,0.12)] hover:border-rose-100/60 flex flex-col relative overflow-hidden transition-all duration-500">
@@ -725,7 +725,7 @@ function RouteComponent() {
                     if (!item) return null;
                     const name = language === "mr" ? (item.name_mr || t(`testimonials.card${activeMobileReview + 1}.name`)) : item.name;
                     const role = language === "mr" ? (item.role_mr || t(`testimonials.card${activeMobileReview + 1}.role`)) : item.role;
-                    const quote = language === "mr" ? (item.text_mr || item.quote_mr || t(`testimonials.card${activeMobileReview + 1}.quote`)) : (item.text || item.content || t(`testimonials.card${activeMobileReview + 1}.quote`));
+                    const quote = language === "mr" ? (item.content_mr || t(`testimonials.card${activeMobileReview + 1}.quote`)) : (item.content || t(`testimonials.card${activeMobileReview + 1}.quote`));
                     const avatar = item.avatar || name?.charAt(0) || "B";
 
                     return (
