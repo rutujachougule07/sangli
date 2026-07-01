@@ -837,7 +837,7 @@ function RouteComponent() {
                               <img src={r.avatar} alt={r.name} className="size-full object-cover" />
                             )
                           ) : (
-                            r.name.charAt(0)
+                            r.name?.charAt(0) || "B"
                           )}
                         </div>
                         <div>
@@ -890,7 +890,7 @@ function RouteComponent() {
                               <img src={r.avatar} alt={r.name} className="size-full object-cover" />
                             )
                           ) : (
-                            r.name.charAt(0)
+                            r.name?.charAt(0) || "B"
                           )}
                         </div>
                         <div>
