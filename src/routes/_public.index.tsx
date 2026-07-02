@@ -805,51 +805,54 @@ function RouteComponent() {
             <div className="mt-12 sm:mt-20 relative">
               {/* Desktop: Horizontal Scroll */}
               <div className="hidden sm:block w-full overflow-x-auto pb-12 pt-4 px-4 -mx-4 no-scrollbar cursor-grab active:cursor-grabbing">
-                <div className="flex gap-6 sm:gap-8 w-max">
+                <div className="flex gap-8 whitespace-nowrap w-max items-stretch">
                   {dynamicReviews.map((r, i) => (
                     <div
-                      key={r.id}
-                      className="group flex-shrink-0 w-[300px] sm:w-[350px] snap-center rounded-[2.5rem] p-6 sm:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.03)] border border-slate-100 bg-[#fdfbf7]/80 flex flex-col relative overflow-hidden transition-all duration-500 hover:shadow-[0_30px_60px_rgba(159,18,57,0.08)] hover:-translate-y-2"
+                      key={`${r.id}-${i}`}
+                      className="w-[720px] shrink-0 whitespace-normal group"
                     >
-                      <Quote className="absolute top-6 right-6 size-8 sm:size-10 text-rose-600/5 group-hover:text-rose-600/10 transition-colors duration-500" />
-                      
-                      <div className="flex items-center gap-4 sm:gap-5 mb-6 sm:mb-8 relative z-10">
-                        <div 
-                          className={cn(
-                            "size-12 sm:size-14 rounded-full bg-rose-50 text-[#2d2624] flex items-center justify-center font-display text-lg sm:text-xl font-black border border-rose-100/50 shadow-sm transition-transform duration-500 overflow-hidden shrink-0",
-                            r.avatar && typeof r.avatar === 'string' && (r.avatar.startsWith('http') || r.avatar.startsWith('data:')) ? "cursor-pointer group-hover:scale-105 hover:ring-2 hover:ring-primary/50" : "group-hover:scale-110"
-                          )}
-                          onClick={() => {
-                            if (r.avatar && typeof r.avatar === 'string' && (r.avatar.startsWith('http') || r.avatar.startsWith('data:'))) {
-                              const isVid = r.avatar.includes(".mp4") || r.avatar.includes(".webm") || r.avatar.includes("videos%2F");
-                              setLightbox({
-                                src: r.avatar,
-                                title: r.text || "",
-                                videoUrl: isVid ? r.avatar : null
-                              });
-                            }
-                          }}
-                        >
-                          {r.avatar ? (
-                            (typeof r.avatar === 'string' && (r.avatar.includes(".mp4") || r.avatar.includes(".webm") || r.avatar.includes("videos%2F"))) ? (
-                              <video src={r.avatar} className="size-full object-cover" muted playsInline />
+                      <div className="h-full rounded-[2.5rem] p-8 sm:p-10 bg-[#fdfbf7]/80 backdrop-blur-md border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.03)] hover:-translate-y-2 hover:shadow-[0_40px_100px_rgba(159,18,57,0.12)] hover:border-rose-100/60 flex flex-col relative overflow-hidden transition-all duration-500">
+                        <div className="absolute -top-24 -right-24 size-48 bg-primary/5 rounded-full blur-[60px] group-hover:bg-primary/10 transition-colors duration-500" />
+                        <Quote className="absolute top-10 right-10 size-12 text-rose-600/5 group-hover:text-rose-600/10 transition-colors duration-500" />
+                        
+                        <div className="flex items-center gap-4 mb-8 relative z-10">
+                          <div 
+                            className={cn(
+                              "size-14 rounded-full bg-rose-50 text-[#2d2624] flex items-center justify-center font-display text-xl font-black shadow-md border border-rose-100/50 transition-all duration-500 group-hover:scale-105 overflow-hidden shrink-0",
+                              r.avatar && typeof r.avatar === 'string' && (r.avatar.startsWith('http') || r.avatar.startsWith('data:')) ? "cursor-pointer group-hover:scale-105" : "group-hover:scale-105"
+                            )}
+                            onClick={() => {
+                              if (r.avatar && typeof r.avatar === 'string' && (r.avatar.startsWith('http') || r.avatar.startsWith('data:'))) {
+                                const isVid = r.avatar.includes(".mp4") || r.avatar.includes(".webm") || r.avatar.includes("videos%2F");
+                                setLightbox({
+                                  src: r.avatar,
+                                  title: r.text || "",
+                                  videoUrl: isVid ? r.avatar : null
+                                });
+                              }
+                            }}
+                          >
+                            {r.avatar ? (
+                              (typeof r.avatar === 'string' && (r.avatar.includes(".mp4") || r.avatar.includes(".webm") || r.avatar.includes("videos%2F"))) ? (
+                                <video src={r.avatar} className="size-full object-cover" muted playsInline />
+                              ) : (
+                                <img src={r.avatar} alt={r.name} className="size-full object-cover" />
+                              )
                             ) : (
-                              <img src={r.avatar} alt={r.name} className="size-full object-cover" />
-                            )
-                          ) : (
-                            r.name?.charAt(0) || "B"
-                          )}
+                              r.name?.charAt(0) || "B"
+                            )}
+                          </div>
+                          <div>
+                            <div className="font-display font-black text-[#2d2624] transition-colors duration-300">{r.name}</div>
+                            <div className="text-[10px] font-black text-[#6b5c58]/80 uppercase tracking-widest">{r.role || t("contact.verified")}</div>
+                          </div>
                         </div>
-                        <div>
-                          <div className="font-display font-black text-[#2d2624] text-base sm:text-lg">{r.name}</div>
-                          <div className="text-[10px] sm:text-xs font-black text-[#6b5c58]/80 uppercase tracking-[0.15em] mt-0.5">{r.role || t("contact.verified")}</div>
-                        </div>
-                      </div>
-                      
-                      <div className="relative z-10 flex-1 flex flex-col justify-between">
-                        <p className="text-[#5c524f] group-hover:text-[#2d2624] transition-colors duration-300">
-                          "{r.text}"
-                        </p>
+                        
+                        {r.text ? (
+                          <p className="text-[#5c524f] group-hover:text-[#2d2624] transition-colors duration-300">
+                            "{r.text}"
+                          </p>
+                        ) : null}
                         <div className="absolute bottom-0 left-12 right-12 h-1 bg-gradient-to-r from-transparent via-rose-600/20 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-700" />
                       </div>
                     </div>
@@ -863,44 +866,46 @@ function RouteComponent() {
                   {dynamicReviews.slice(0, 3).map((r, i) => (
                     <div
                       key={r.id}
-                      className="group rounded-[2.5rem] p-6 shadow-[0_20px_50px_rgba(0,0,0,0.03)] border border-slate-100 bg-[#fdfbf7]/80 flex flex-col relative overflow-hidden"
+                      className="h-full rounded-[2rem] p-6 shadow-[0_20px_50px_rgba(0,0,0,0.03)] border border-slate-100 bg-[#fdfbf7]/80 flex flex-col relative overflow-hidden justify-between"
                     >
                       <Quote className="absolute top-5 right-5 size-7 text-rose-600/5" />
-                      <div className="flex items-center gap-3 mb-4 relative z-10">
-                        <div 
-                          className={cn(
-                            "size-10 rounded-full bg-rose-50 text-[#2d2624] flex items-center justify-center font-display text-base font-black border border-rose-100/50 overflow-hidden shrink-0",
-                            r.avatar && typeof r.avatar === 'string' && (r.avatar.startsWith('http') || r.avatar.startsWith('data:')) ? "cursor-pointer" : ""
-                          )}
-                          onClick={() => {
-                            if (r.avatar && typeof r.avatar === 'string' && (r.avatar.startsWith('http') || r.avatar.startsWith('data:'))) {
-                              const isVid = r.avatar.includes(".mp4") || r.avatar.includes(".webm") || r.avatar.includes("videos%2F");
-                              setLightbox({
-                                src: r.avatar,
-                                title: r.text || "",
-                                videoUrl: isVid ? r.avatar : null
-                              });
-                            }
-                          }}
-                        >
-                          {r.avatar ? (
-                            (typeof r.avatar === 'string' && (r.avatar.includes(".mp4") || r.avatar.includes(".webm") || r.avatar.includes("videos%2F"))) ? (
-                              <video src={r.avatar} className="size-full object-cover" muted playsInline />
+                      <div>
+                        <div className="flex items-center gap-3 mb-4 relative z-10">
+                          <div 
+                            className={cn(
+                              "size-10 rounded-full bg-rose-50 text-[#2d2624] flex items-center justify-center font-display text-base font-black border border-rose-100/50 overflow-hidden shrink-0",
+                              r.avatar && typeof r.avatar === 'string' && (r.avatar.startsWith('http') || r.avatar.startsWith('data:')) ? "cursor-pointer" : ""
+                            )}
+                            onClick={() => {
+                              if (r.avatar && typeof r.avatar === 'string' && (r.avatar.startsWith('http') || r.avatar.startsWith('data:'))) {
+                                const isVid = r.avatar.includes(".mp4") || r.avatar.includes(".webm") || r.avatar.includes("videos%2F");
+                                setLightbox({
+                                  src: r.avatar,
+                                  title: r.text || "",
+                                  videoUrl: isVid ? r.avatar : null
+                                });
+                              }
+                            }}
+                          >
+                            {r.avatar ? (
+                              (typeof r.avatar === 'string' && (r.avatar.includes(".mp4") || r.avatar.includes(".webm") || r.avatar.includes("videos%2F"))) ? (
+                                <video src={r.avatar} className="size-full object-cover" muted playsInline />
+                              ) : (
+                                <img src={r.avatar} alt={r.name} className="size-full object-cover" />
+                              )
                             ) : (
-                              <img src={r.avatar} alt={r.name} className="size-full object-cover" />
-                            )
-                          ) : (
-                            r.name?.charAt(0) || "B"
-                          )}
+                              r.name?.charAt(0) || "B"
+                            )}
+                          </div>
+                          <div>
+                            <div className="font-display font-black text-[#2d2624] text-sm">{r.name}</div>
+                            <div className="text-[9px] font-black text-[#6b5c58]/80 uppercase tracking-widest">{r.role || t("contact.verified")}</div>
+                          </div>
                         </div>
-                        <div>
-                          <div className="font-display font-black text-[#2d2624] text-sm">{r.name}</div>
-                          <div className="text-[9px] font-black text-[#6b5c58]/80 uppercase tracking-widest">{r.role || t("contact.verified")}</div>
-                        </div>
+                        <p className="text-[#1a1513] font-medium italic leading-relaxed text-sm relative z-10">
+                          "{r.text}"
+                        </p>
                       </div>
-                      <p className="text-[#1a1513] font-medium italic leading-relaxed text-sm relative z-10">
-                        "{r.text}"
-                      </p>
                     </div>
                   ))}
                 </div>
